@@ -1,6 +1,7 @@
 import ollama
 import sys_msgs
 import requests
+import trafilatura
 from bs4 import BeautifulSoup
 
 
@@ -63,6 +64,28 @@ def duckduckgo_search(query):
         })
     return results
     
+def best_search_result(s_results,query):
+    sys_msg= sys_msgs.best_search_msg
+    best_msg = f'SEARCH_RESULTS:{s_results} \n USER_PROMPT:{assistant_convo[-1]} \nSEARCH_QUERY:{query}'
+    for _ in range(2):
+        try:
+            response = ollama.chat(
+            model='llama3.2:latest',
+            messages=[{'role':'system','content':sys_msg}, {'role':'user', 'content':best_msg}]
+            )
+            return int(response['message']['content'])
+        except:
+            continue
+    
+    return 0
+
+def scrape_webpage(url):
+    try:
+        downloaded = trafilatura.fetch_url(url=url)
+        return trafilatura.extract(downloaded,include_formatting=True,include_links=True)
+    except Exception as e:
+        return None
+
 
 def ai_search():
     context=None
@@ -73,7 +96,17 @@ def ai_search():
         search_query = search_query[1:-1]
 
     search_results = duckduckgo_search(search_query)
-    
+    context_found = False
+    while not context_found and len(search_results)>0:
+        best_result = best_search_result(s_results=search_results,query=search_query)
+        try:
+            page_link = search_results[best_result]['link']
+        except:
+            print('FAILED TO SELECT BEST SEARCH RESULT, TRYING AGAIN.')
+            continue
+
+        page_text = scrape_webpage(page_link)
+        search_results.pop(best_result)
 
 def stream_assistant_response():
     global assistant_convo
