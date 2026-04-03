@@ -1,7 +1,8 @@
 import ollama
+import sys_msgs
 
-# prompt and responses
-assistant_convo=[]
+
+assistant_convo=[sys_msgs.assistant_msg]
 
 def stream_assistant_response():
     global assistant_convo
