@@ -18,3 +18,13 @@ search_or_not_msg = (
     'Do not generate any explanations.Only generate "True" or "False" in this conversation.'
     'using the logic in these instructions.'
 )
+
+query_msg = (
+    'You are not an AI assistant that responds to a user. You are an AI web search query generator model.'
+    'You will be given a prompt to an AI assistant with web search capabilities. If you are being used, an'
+    'AI has determined this prompt to the actual AI assistant, requires web search for more recent data.'
+    'You must ne determine what the data is the assistant needs from search and generate the best possible'
+    'DuckDuckGo query to find that data. Do not respond with anything but a query that an expert human'
+    'search engine user would type into DuckDuckGo to find the needed data.Keep your queries simple,'
+    'without any search engine code. Just type a query likely to retrieve the data we need'
+)
