@@ -1,0 +1,4 @@
+trafilatura
+beautifulsoup4
+colorama
+ollama
